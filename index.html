@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>London School - TG Mini App Grid</title>
+    <title>London School - Premium Animation</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
     <style>
@@ -15,6 +15,7 @@
             --card-bg-hover: var(--logo-blue);
             --card-text-hover: #ffffff;
             --pattern-color: var(--logo-blue);
+            --overlay-bg: rgba(255, 255, 255, 0.9);
         }
 
         [data-theme="dark"] {
@@ -24,6 +25,7 @@
             --card-bg-hover: #ffffff;
             --card-text-hover: var(--logo-blue);
             --pattern-color: #ffffff;
+            --overlay-bg: rgba(11, 34, 101, 0.95);
         }
 
         * {
@@ -37,38 +39,46 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background-color 0.3s ease;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: 20px 15px;
+            overflow-x: hidden;
         }
 
-        /* Кнопка-переключатель (маленький кружочек) */
-        .theme-toggle {
+        /* --- ЭКРАН ЗАГРУЗКИ (PRELOADER) --- */
+        #preloader {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: var(--bg-color);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.6s ease;
+        }
+
+        /* Тень/свечение для глубины вокруг кружка */
+        .loader-glow {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 30px;
-            height: 30px;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, var(--text-color) 0%, transparent 70%);
+            opacity: 0.15;
             border-radius: 50%;
-            background-color: var(--logo-blue); /* Темная в светлой теме */
-            border: 2px solid transparent;
-            cursor: pointer;
-            z-index: 10;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            animation: pulse 2s infinite;
         }
 
-        [data-theme="dark"] .theme-toggle {
-            background-color: #ffffff; /* Белая в темной теме */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.1; }
+            50% { transform: scale(1.2); opacity: 0.2; }
+            100% { transform: scale(1); opacity: 0.1; }
         }
 
-        .theme-toggle:active {
-            transform: scale(0.9);
-        }
-
-        /* Логотип в круге */
+        /* --- ЛОГОТИП И ЕГО АНИМАЦИЯ --- */
         .logo-container {
             width: 130px;
             height: 130px;
@@ -79,9 +89,13 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            margin-top: 40px;
-            margin-bottom: 40px;
-            transition: border-color 0.3s ease;
+            z-index: 101;
+            /* Начальное состояние в центре */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1.4);
+            transition: all 1s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }
 
         .logo-container img {
@@ -89,13 +103,52 @@
             height: auto;
         }
 
-        /* Сетка в 2 столбика */
+        /* Класс, который перемещает логотип наверх */
+        .logo-container.moved {
+            top: 100px; /* Позиция сверху */
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* --- КНОПКА ТЕМЫ --- */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--logo-blue);
+            border: 2px solid transparent;
+            cursor: pointer;
+            z-index: 10;
+            opacity: 0; /* Скрыта в начале */
+            transform: translateY(-20px);
+            transition: all 0.5s ease;
+        }
+
+        [data-theme="dark"] .theme-toggle { background-color: #ffffff; }
+
+        .theme-toggle.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- СЕТКА КАРТОЧЕК --- */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 2 колонки */
-            gap: 12px; /* Отступ между карточками */
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
             width: 100%;
             max-width: 500px;
+            margin-top: 180px; /* Отступ под логотипом */
+            opacity: 0; /* Скрыты в начале */
+            transform: translateY(50px); /* Снизу */
+            transition: all 0.8s ease;
+        }
+
+        .cards-grid.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* Карточки */
@@ -104,13 +157,11 @@
             background-color: transparent;
             border: 2px solid var(--card-border);
             border-radius: 18px;
-            aspect-ratio: 1 / 0.8; /* Делает их почти квадратными */
+            aspect-ratio: 1 / 0.8;
             display: flex;
             justify-content: center;
             align-items: center;
-            text-align: center;
             padding: 10px;
-            cursor: pointer;
             overflow: hidden;
             transition: background-color 0.3s ease;
         }
@@ -122,11 +173,9 @@
             font-size: 14px;
             text-transform: uppercase;
             font-weight: 800;
-            letter-spacing: 0.5px;
             transition: color 0.3s ease;
         }
 
-        /* Узор внутри карточки */
         .card::before {
             content: "";
             position: absolute;
@@ -135,46 +184,35 @@
             mask-image: repeating-linear-gradient(45deg, black, black 1px, transparent 1px, transparent 12px);
             -webkit-mask-image: repeating-linear-gradient(45deg, black, black 1px, transparent 1px, transparent 12px);
             opacity: 0.2;
-            z-index: 1;
             transition: background-color 0.3s ease;
         }
 
-        /* Состояние при наведении или нажатии (тапе) */
-        .card:hover, .card:active {
+        .card:active {
             background-color: var(--card-bg-hover);
         }
 
-        .card:hover h2, .card:active h2 {
-            color: var(--card-text-hover);
-        }
+        .card:active h2 { color: var(--card-text-hover); }
+        .card:active::before { background-color: var(--card-text-hover); opacity: 0.3; }
 
-        .card:hover::before, .card:active::before {
-            background-color: var(--card-text-hover); /* Узор меняет цвет на противоположный */
-            opacity: 0.3;
-        }
     </style>
 </head>
 <body data-theme="dark">
 
+    <div id="preloader">
+        <div class="loader-glow"></div>
+    </div>
+
     <button class="theme-toggle" id="themeBtn"></button>
 
-    <div class="logo-container">
+    <div class="logo-container" id="mainLogo">
         <img src="logo.jpg" alt="London School">
     </div>
 
-    <main class="cards-grid">
-        <div class="card">
-            <h2>Услуги</h2>
-        </div>
-        <div class="card">
-            <h2>О нас</h2>
-        </div>
-        <div class="card">
-            <h2>Гео-позиция</h2>
-        </div>
-        <div class="card">
-            <h2>Курсы</h2>
-        </div>
+    <main class="cards-grid" id="mainGrid">
+        <div class="card"><h2>Услуги</h2></div>
+        <div class="card"><h2>О нас</h2></div>
+        <div class="card"><h2>Гео-позиция</h2></div>
+        <div class="card"><h2>Курсы</h2></div>
     </main>
 
     <script>
@@ -182,10 +220,32 @@
         tg.ready();
         tg.expand();
 
+        const logo = document.getElementById('mainLogo');
+        const grid = document.getElementById('mainGrid');
         const themeBtn = document.getElementById('themeBtn');
-        const body = document.body;
+        const preloader = document.getElementById('preloader');
 
+        // Логика анимации при загрузке
+        window.onload = () => {
+            setTimeout(() => {
+                // 1. Убираем затемнение фона
+                preloader.style.opacity = '0';
+                
+                // 2. Перемещаем логотип наверх
+                logo.classList.add('moved');
+
+                // 3. Через небольшую задержку проявляем карточки и кнопку
+                setTimeout(() => {
+                    grid.classList.add('visible');
+                    themeBtn.classList.add('visible');
+                    preloader.style.display = 'none'; // Удаляем фон совсем
+                }, 600);
+            }, 1500); // Время задержки логотипа в центре (1.5 сек)
+        };
+
+        // Переключение темы
         themeBtn.addEventListener('click', () => {
+            const body = document.body;
             if (body.getAttribute('data-theme') === 'dark') {
                 body.removeAttribute('data-theme');
             } else {
