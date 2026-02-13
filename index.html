@@ -276,8 +276,18 @@
         const island = document.getElementById('island');
         const body = document.body;
 
-        window.scrollTo(0, 0);
+        const savedTheme = localStorage.getItem('theme');
 
+        if (!savedTheme) {
+            localStorage.setItem('theme', 'light');
+        }
+
+        if (savedTheme === 'dark') {
+            body.setAttribute('data-theme', 'dark');
+        }
+
+        window.scrollTo(0, 0);
+        body.classList.add('no-scroll');
         setTimeout(() => {
             body.classList.remove('no-scroll');
         }, 1800);
@@ -296,9 +306,13 @@
             e.preventDefault();
             if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
             
-            const body = document.body;
-            if (body.getAttribute('data-theme') === 'dark') body.removeAttribute('data-theme');
-            else body.setAttribute('data-theme', 'dark');
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light'); 
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');  
+            }
         }
 
         function handleCardClick(name) {
