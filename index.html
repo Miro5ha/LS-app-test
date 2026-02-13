@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>London School - TG Mini App Grid</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --logo-blue: #0b2265; 
+            --text-color: var(--logo-blue);
+            --card-border: var(--logo-blue);
+            --card-bg-hover: var(--logo-blue);
+            --card-text-hover: #ffffff;
+            --pattern-color: var(--logo-blue);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: var(--logo-blue);
+            --text-color: #ffffff;
+            --card-border: #ffffff;
+            --card-bg-hover: #ffffff;
+            --card-text-hover: var(--logo-blue);
+            --pattern-color: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 15px;
+        }
+
+        /* Кнопка-переключатель (маленький кружочек) */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--logo-blue); /* Темная в светлой теме */
+            border: 2px solid transparent;
+            cursor: pointer;
+            z-index: 10;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        [data-theme="dark"] .theme-toggle {
+            background-color: #ffffff; /* Белая в темной теме */
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.9);
+        }
+
+        /* Логотип в круге */
+        .logo-container {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            border: 3px solid var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            transition: border-color 0.3s ease;
+        }
+
+        .logo-container img {
+            width: 80%;
+            height: auto;
+        }
+
+        /* Сетка в 2 столбика */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 колонки */
+            gap: 12px; /* Отступ между карточками */
+            width: 100%;
+            max-width: 500px;
+        }
+
+        /* Карточки */
+        .card {
+            position: relative;
+            background-color: transparent;
+            border: 2px solid var(--card-border);
+            border-radius: 18px;
+            aspect-ratio: 1 / 0.8; /* Делает их почти квадратными */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        .card h2 {
+            position: relative;
+            z-index: 5;
+            color: var(--text-color);
+            font-size: 14px;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+        }
+
+        /* Узор внутри карточки */
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--pattern-color);
+            mask-image: repeating-linear-gradient(45deg, black, black 1px, transparent 1px, transparent 12px);
+            -webkit-mask-image: repeating-linear-gradient(45deg, black, black 1px, transparent 1px, transparent 12px);
+            opacity: 0.2;
+            z-index: 1;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Состояние при наведении или нажатии (тапе) */
+        .card:hover, .card:active {
+            background-color: var(--card-bg-hover);
+        }
+
+        .card:hover h2, .card:active h2 {
+            color: var(--card-text-hover);
+        }
+
+        .card:hover::before, .card:active::before {
+            background-color: var(--card-text-hover); /* Узор меняет цвет на противоположный */
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <button class="theme-toggle" id="themeBtn"></button>
+
+    <div class="logo-container">
+        <img src="logo.jpg" alt="London School">
+    </div>
+
+    <main class="cards-grid">
+        <div class="card">
+            <h2>Услуги</h2>
+        </div>
+        <div class="card">
+            <h2>О нас</h2>
+        </div>
+        <div class="card">
+            <h2>Гео-позиция</h2>
+        </div>
+        <div class="card">
+            <h2>Курсы</h2>
+        </div>
+    </main>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        const themeBtn = document.getElementById('themeBtn');
+        const body = document.body;
+
+        themeBtn.addEventListener('click', () => {
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+            }
+        });
+    </script>
+</body>
+</html>
