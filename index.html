@@ -8,9 +8,9 @@
     
     <style>
         html, body {
-            overflow-anchor: none;
+            overflow-anchor: none; /* Запрещаем браузеру прыгать за двигающимися элементами */
         }
-        
+       
         :root {
             --bg-color: #ffffff;
             --logo-blue: #0b2265; 
@@ -48,6 +48,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
+        /* --- СТАРТОВЫЕ АНИМАЦИИ --- */
         @keyframes slideUpFade {
             0% {
                 opacity: 0;
@@ -70,6 +71,7 @@
             }
         }
 
+        /* ХЕДЕР И ОСТРОВ */
         .header-wrapper {
             position: sticky;
             top: 0;
@@ -97,6 +99,7 @@
             will-change: width, height, top;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             
+            /* Анимация появления острова (самый первый) */
             animation: slideUpFade 0.6s cubic-bezier(0.18, 0.89, 0.32, 1.28) backwards;
         }
 
@@ -129,6 +132,7 @@
             letter-spacing: 1px;
         }
 
+        /* КНОПКА ТЕМЫ */
         .theme-toggle {
             width: 28px;
             height: 28px;
@@ -165,6 +169,7 @@
             opacity: 1;
             transition: opacity 0.3s ease, transform 0.3s ease;
             
+            /* Появляется самой последней, после карточек (задержка 1.2s) */
             animation: slideUpFadeBtn 0.5s ease-out 1.2s backwards;
         }
 
@@ -174,6 +179,7 @@
             transform: scale(0.5);
         }
 
+        /* СЕТКА И КАРТОЧКИ */
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -195,13 +201,15 @@
             cursor: pointer;
             transition: transform 0.2s ease, background-color 0.3s ease, color 0.3s ease;
             
+            /* Базовая анимация для всех карточек */
             animation: slideUpFade 0.5s ease-out backwards;
         }
 
-        .card:nth-child(1), .card:nth-child(2) { animation-delay: 0.2s; }
-        .card:nth-child(3), .card:nth-child(4) { animation-delay: 0.4s; }
-        .card:nth-child(5), .card:nth-child(6) { animation-delay: 0.6s; }
-        .card:nth-child(7), .card:nth-child(8) { animation-delay: 0.8s; }
+        /* Попарная задержка появления карточек */
+        .card:nth-child(1), .card:nth-child(2) { animation-delay: 0.2s; } /* Первая пара */
+        .card:nth-child(3), .card:nth-child(4) { animation-delay: 0.4s; } /* Вторая пара */
+        .card:nth-child(5), .card:nth-child(6) { animation-delay: 0.6s; } /* Третья пара */
+        .card:nth-child(7), .card:nth-child(8) { animation-delay: 0.8s; } /* Четвертая пара */
 
         .card:hover {
             background-color: var(--card-border);
@@ -282,7 +290,14 @@
             body.setAttribute('data-theme', 'dark');
         }
 
+        // --- НОВЫЙ КОД ДЛЯ ФИКСА СКРОЛЛА ---
+        // 1. Принудительно кидаем страницу в самый верх
         window.scrollTo(0, 0);
+        
+        setTimeout(() => {
+            body.classList.remove('no-scroll');
+        }, 1800);
+        // -----------------------------------
 
         window.addEventListener('scroll', () => {
             if (window.scrollY > 35) {
@@ -300,10 +315,10 @@
             
             if (body.getAttribute('data-theme') === 'dark') {
                 body.removeAttribute('data-theme');
-                localStorage.setItem('theme', 'light'); 
+                localStorage.setItem('theme', 'light'); // Сохраняем светлую
             } else {
                 body.setAttribute('data-theme', 'dark');
-                localStorage.setItem('theme', 'dark');  
+                localStorage.setItem('theme', 'dark');  // Сохраняем темную
             }
         }
 
@@ -318,5 +333,3 @@
     </script>
 </body>
 </html>
-
-
