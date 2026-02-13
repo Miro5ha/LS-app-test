@@ -212,6 +212,7 @@ body.is-scrolled .external-btn {
     text-transform: uppercase; 
     font-weight: 800;
     pointer-events: none;
+    font-family: "Times New Roman", Times, serif;
 }
 
 .card-pattern {
@@ -228,3 +229,4 @@ body.is-scrolled .external-btn {
     opacity: 0.4;
 
 }
+
