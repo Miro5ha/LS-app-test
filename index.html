@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>London School</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <header class="header-wrapper">
+        <div class="island" id="island">
+            <img src="logo.jpg" style="width:75%; border-radius:50%;" class="logo-img">
+            <div class="island-content">
+                <img src="logo.jpg" style="width: 34px; height: 34px; border-radius: 50%;">
+                <div class="island-text">LONDON<br>SCHOOL</div>
+                <button class="theme-toggle" onclick="toggleTheme(event)"></button>
+            </div>
+        </div>
+        <button class="theme-toggle external-btn" onclick="toggleTheme(event)"></button>
+    </header>
+    <main class="grid">
+        <div class="card" onclick="handleCardClick('О нас')"><div class="card-pattern"></div><h2>О нас</h2></div>
+        <div class="card" onclick="handleCardClick('Курсы')"><div class="card-pattern"></div><h2>Курсы</h2></div>
+        <div class="card" onclick="handleCardClick('Учителя')"><div class="card-pattern"></div><h2>Учителя</h2></div>
+        <div class="card" onclick="handleCardClick('Услуги')"><div class="card-pattern"></div><h2>Услуги</h2></div>
+        <div class="card" onclick="handleCardClick('Цены')"><div class="card-pattern"></div><h2>Цены</h2></div>
+        <div class="card" onclick="handleCardClick('Контакты')"><div class="card-pattern"></div><h2>Контакты</h2></div>
+        <div class="card" onclick="handleCardClick('Гео-позиция')"><div class="card-pattern"></div><h2>Гео-позиция</h2></div>
+        <div class="card" onclick="handleCardClick('Записаться')"><div class="card-pattern"></div><h2>Записаться</h2></div>
+    </main>
+    <script>
+        const tg = window.Telegram.WebApp;
+        const island = document.getElementById('island');
+        const body = document.body;
+
+        const savedTheme = localStorage.getItem('theme');
+
+        if (!savedTheme) {
+            localStorage.setItem('theme', 'light');
+        }
+
+        if (savedTheme === 'dark') {
+            body.setAttribute('data-theme', 'dark');
+        }
+
+        // --- НОВЫЙ КОД ДЛЯ ФИКСА СКРОЛЛА ---
+        // 1. Принудительно кидаем страницу в самый верх
+        window.scrollTo(0, 0);
+        
+        setTimeout(() => {
+            body.classList.remove('no-scroll');
+        }, 1800);
+        // -----------------------------------
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 35) {
+                island.classList.add('active');
+                body.classList.add('is-scrolled');
+            } else {
+                island.classList.remove('active');
+                body.classList.remove('is-scrolled');
+            }
+        });
+
+        function toggleTheme(e) {
+            e.preventDefault();
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light'); // Сохраняем светлую
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');  // Сохраняем темную
+            }
+        }
+
+        function handleCardClick(name) {
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('light');
+            }
+            setTimeout(() => {
+                console.log("Переход в раздел: " + name);
+            }, 100);
+        }
+    </script>
+</body>
+</html>
