@@ -7,6 +7,14 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
     <style>
+        html, body {
+            overflow-anchor: none;
+        }
+
+        body.no-scroll {
+            overflow: hidden; 
+        }
+
         :root {
             --bg-color: #ffffff;
             --logo-blue: #0b2265; 
@@ -44,13 +52,34 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
-        /* ХЕДЕР */
+        @keyframes slideUpFade {
+            0% {
+                opacity: 0;
+                transform: translateY(60px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUpFadeBtn {
+            0% {
+                opacity: 0;
+                transform: translateY(60px) scale(1);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
         .header-wrapper {
             position: sticky;
             top: 0;
             width: 100%;
             height: 140px;
-            z-index: 1000;
+            z-index: 2000;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -71,6 +100,8 @@
             pointer-events: auto;
             will-change: width, height, top;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            
+            animation: slideUpFade 0.6s cubic-bezier(0.18, 0.89, 0.32, 1.28) backwards;
         }
 
         .island.active {
@@ -102,7 +133,6 @@
             letter-spacing: 1px;
         }
 
-        /* КНОПКА ТЕМЫ */
         .theme-toggle {
             width: 28px;
             height: 28px;
@@ -110,12 +140,23 @@
             background-color: var(--btn-toggle-bg) !important;
             border: none;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease, opacity 0.2s ease;
             outline: none;
+            -webkit-appearance: none;
+            box-shadow: none;
         }
 
         [data-theme="dark"] .island .theme-toggle {
             border: 2px solid #0b2265;
+        }
+
+        .theme-toggle:hover {
+            opacity: 0.8;
+            transform: scale(1.1);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.9);
         }
 
         .external-btn {
@@ -127,30 +168,16 @@
             border: 2.5px solid var(--bg-color);
             opacity: 1;
             transition: opacity 0.3s ease, transform 0.3s ease;
+            
+            animation: slideUpFadeBtn 0.5s ease-out 1.2s backwards;
         }
 
-        /* СКРЫВАЕМ кнопку, когда остров активен */
-        /* Используем body с классом для надежности */
         body.is-scrolled .external-btn {
             opacity: 0;
             pointer-events: none;
-            transform: scale(0.5); /* Плавное уменьшение при исчезновении */
+            transform: scale(0.5);
         }
 
-        /* ХЕДЕР И ОСТРОВ */
-        .header-wrapper {
-            position: sticky;
-            top: 0;
-            width: 100%;
-            height: 140px;
-            z-index: 2000; /* Выше всех */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            pointer-events: none;
-        }
-
-        /* СЕТКА И КАРТОЧКИ */
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -168,22 +195,27 @@
             justify-content: center;
             position: relative;
             overflow: hidden;
-            /* Плавный возврат в обычное состояние */
-            transition: transform 0.2s ease, background-color 0.3s ease, color 0.3s ease;
             background-color: transparent;
             cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.3s ease, color 0.3s ease;
+            
+            animation: slideUpFade 0.5s ease-out backwards;
         }
+
+        .card:nth-child(1), .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3), .card:nth-child(4) { animation-delay: 0.4s; }
+        .card:nth-child(5), .card:nth-child(6) { animation-delay: 0.6s; }
+        .card:nth-child(7), .card:nth-child(8) { animation-delay: 0.8s; }
 
         .card:hover {
             background-color: var(--card-border);
             color: var(--bg-color);
-            transform: translateY(-5px); /* Слегка подпрыгивает вверх */
+            transform: translateY(-5px);
         }
 
-        /* Эффект сжатия при клике */
         .card:active {
-            transform: scale(0.94) translateY(0); /* Сжимается */
-            transition: transform 0.1s; /* Быстрый отклик */
+            transform: scale(0.94) translateY(0);
+            transition: transform 0.1s;
         }
 
         .card:hover .card-pattern {
@@ -197,36 +229,6 @@
             text-transform: uppercase; 
             font-weight: 800;
             pointer-events: none;
-        }
-
-        .theme-toggle {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background-color: var(--btn-toggle-bg) !important;
-            border: none;
-            cursor: pointer;
-            outline: none;
-            -webkit-appearance: none;
-            box-shadow: none;
-            
-            /* Указываем анимацию только для цвета и трансформации, исключая border */
-            transition: background-color 0.3s ease, transform 0.2s ease, opacity 0.2s ease;
-        }
-
-        /* Обводка для темной темы в острове */
-        [data-theme="dark"] .island .theme-toggle {
-            /* Обводка появится мгновенно, так как она не указана в transition выше */
-            border: 2px solid #0b2265; 
-        }
-
-        .theme-toggle:hover {
-            opacity: 0.8;
-            transform: scale(1.1);
-        }
-
-        .theme-toggle:active {
-            transform: scale(0.9);
         }
 
         .card-pattern {
@@ -274,13 +276,19 @@
         const island = document.getElementById('island');
         const body = document.body;
 
+        window.scrollTo(0, 0);
+
+        setTimeout(() => {
+            body.classList.remove('no-scroll');
+        }, 1800);
+
         window.addEventListener('scroll', () => {
             if (window.scrollY > 35) {
                 island.classList.add('active');
-                body.classList.add('is-scrolled'); // Добавляем класс для скрытия кнопки
+                body.classList.add('is-scrolled');
             } else {
                 island.classList.remove('active');
-                body.classList.remove('is-scrolled'); // Возвращаем кнопку
+                body.classList.remove('is-scrolled');
             }
         });
 
@@ -297,7 +305,6 @@
             if (tg.HapticFeedback) {
                 tg.HapticFeedback.impactOccurred('light');
             }
-            // Добавим небольшую задержку перед действием, чтобы пользователь успел увидеть анимацию
             setTimeout(() => {
                 console.log("Переход в раздел: " + name);
             }, 100);
