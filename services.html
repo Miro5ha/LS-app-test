@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>London School - Услуги</title>
+    <link rel="stylesheet" href="services.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+
+    <header class="header-wrapper">
+        <div class="island" id="island">
+            <div class="island-logo">
+                <img src="img/logo.jpg" alt="Logo" style="width: 80px; height: 80px; object-fit: contain;">
+            </div>
+
+            <div class="island-content">
+                <button class="control-btn" onclick="window.location.href='index.html'">
+                    <svg viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" /></svg>
+                </button>
+                
+                <div class="island-text">Услуги</div>
+                
+                <button class="control-btn theme-toggle" onclick="toggleTheme(event)">
+                    <svg viewBox="0 0 24 24" style="width:14px; height:14px;"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="grid">
+        <div class="card" onclick="handleCardClick('Speaking')"><div class="card-pattern"></div><h2>Speaking</h2></div>
+        <div class="card" onclick="handleCardClick('IELTS')"><div class="card-pattern"></div><h2>IELTS</h2></div>
+        <div class="card" onclick="handleCardClick('Grammar')"><div class="card-pattern"></div><h2>Grammar</h2></div>
+        <div class="card" onclick="handleCardClick('Kids')"><div class="card-pattern"></div><h2>Kids</h2></div>
+        <div class="card" onclick="handleCardClick('Teens')"><div class="card-pattern"></div><h2>Teens</h2></div>
+        <div class="card" onclick="handleCardClick('Individual')"><div class="card-pattern"></div><h2>ЛИЧНОЕ</h2></div>
+        <div class="card" onclick="handleCardClick('Online')"><div class="card-pattern"></div><h2>ONLINE</h2></div>
+        <div class="card" onclick="handleCardClick('Business')"><div class="card-pattern"></div><h2>БИЗНЕС</h2></div>
+        <div class="card" onclick="handleCardClick('Intensive')"><div class="card-pattern"></div><h2>ИНТЕНСИВ</h2></div>
+        <div class="card" onclick="handleCardClick('Exams')"><div class="card-pattern"></div><h2>ЭКЗАМЕНЫ</h2></div>
+        <div class="card" onclick="handleCardClick('Reading')"><div class="card-pattern"></div><h2>ЧТЕНИЕ</h2></div>
+        <div class="card" onclick="handleCardClick('Vocab')"><div class="card-pattern"></div><h2>СЛОВАРЬ</h2></div>
+        <div class="card" onclick="handleCardClick('Writing')"><div class="card-pattern"></div><h2>ПИСЬМО</h2></div>
+        <div class="card" onclick="handleCardClick('Support')"><div class="card-pattern"></div><h2>ПОМОЩЬ</h2></div>
+        <div class="card" onclick="handleCardClick('Consult')"><div class="card-pattern"></div><h2>СОВЕТ</h2></div>
+    </main>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        const body = document.body;
+        const island = document.getElementById('island');
+
+        // Инициализация темы при загрузке
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        if (savedTheme === 'dark') body.setAttribute('data-theme', 'dark');
+
+        // Анимация: Остров превращается из логотипа в шторку
+        window.onload = () => {
+            setTimeout(() => {
+                island.classList.add('active');
+            }, 800); // Задержка 0.8 сек для эффекта
+        };
+
+        function toggleTheme(e) {
+            e.preventDefault();
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        function goBack() {
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+            window.history.back();
+        }
+
+        function handleCardClick(name) {
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+            console.log("Раздел: " + name);
+        }
+
+        tg.ready();
+    </script>
+</body>
+</html>
