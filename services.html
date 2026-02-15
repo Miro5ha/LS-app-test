@@ -52,15 +52,13 @@
         const body = document.body;
         const island = document.getElementById('island');
 
-        // Инициализация темы при загрузке
         const savedTheme = localStorage.getItem('theme') || 'light';
         if (savedTheme === 'dark') body.setAttribute('data-theme', 'dark');
 
-        // Анимация: Остров превращается из логотипа в шторку
         window.onload = () => {
             setTimeout(() => {
                 island.classList.add('active');
-            }, 800); // Задержка 0.8 сек для эффекта
+            }, 800);
         };
 
         function toggleTheme(e) {
@@ -91,4 +89,5 @@
 </body>
 
 </html>
+
 
