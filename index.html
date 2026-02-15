@@ -12,7 +12,7 @@
         <div class="island" id="island">
             <img src="logo.jpg" style="width:75%; border-radius:50%;" class="logo-img">
             <div class="island-content">
-                <img src="logo.jpg" style="width: 34px; height: 34px; border-radius: 50%;">
+                <img src="img/logo.jpg" style="width: 34px; height: 34px; border-radius: 50%;">
                 <div class="island-text">LONDON<br>SCHOOL</div>
                 <button class="theme-toggle" onclick="toggleTheme(event)"></button>
             </div>
@@ -33,6 +33,7 @@
         const tg = window.Telegram.WebApp;
         const island = document.getElementById('island');
         const body = document.body;
+
         const savedTheme = localStorage.getItem('theme');
 
         if (!savedTheme) {
@@ -43,11 +44,14 @@
             body.setAttribute('data-theme', 'dark');
         }
 
+        // --- НОВЫЙ КОД ДЛЯ ФИКСА СКРОЛЛА ---
+        // 1. Принудительно кидаем страницу в самый верх
         window.scrollTo(0, 0);
         
         setTimeout(() => {
             body.classList.remove('no-scroll');
         }, 1800);
+        // -----------------------------------
 
         window.addEventListener('scroll', () => {
             if (window.scrollY > 35) {
@@ -62,12 +66,13 @@
         function toggleTheme(e) {
             e.preventDefault();
             if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+            
             if (body.getAttribute('data-theme') === 'dark') {
                 body.removeAttribute('data-theme');
-                localStorage.setItem('theme', 'light'); 
+                localStorage.setItem('theme', 'light'); // Сохраняем светлую
             } else {
                 body.setAttribute('data-theme', 'dark');
-                localStorage.setItem('theme', 'dark');  
+                localStorage.setItem('theme', 'dark');  // Сохраняем темную
             }
         }
 
@@ -81,7 +86,4 @@
         }
     </script>
 </body>
-
 </html>
-
-
