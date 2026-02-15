@@ -1,3 +1,4 @@
+/* --- 1. БАЗОВЫЕ НАСТРОЙКИ (КАК НА ГЛАВНОЙ) --- */
 html, body {
     overflow-anchor: none;
 }
@@ -39,21 +40,23 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
+/* --- 2. АНИМАЦИИ (КОПИЯ С ГЛАВНОЙ) --- */
 @keyframes slideUpFade {
     0% { opacity: 0; transform: translateY(60px); }
     100% { opacity: 1; transform: translateY(0); }
 }
 
+/* --- 3. ХЕДЕР И ОСТРОВ (ПОВЕДЕНИЕ КАК НА ГЛАВНОЙ) --- */
 .header-wrapper {
     position: sticky;
     top: 0;
     width: 100%;
-    height: 160px;
+    height: 160px; /* Высота под большой круг */
     z-index: 2000;
     display: flex;
     justify-content: center;
     align-items: center;
-    pointer-events: none;
+    pointer-events: none; /* Пропускаем клики сквозь пустые места */
 }
 
 .island {
@@ -66,22 +69,27 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    /* Та самая плавная анимация Apple */
     transition: all 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-    pointer-events: auto;
+    pointer-events: auto; /* Сам остров кликабелен */
     will-change: width, height, top;
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     overflow: hidden;
+    
+    /* Анимация появления при загрузке страницы */
     animation: slideUpFade 0.6s cubic-bezier(0.18, 0.89, 0.32, 1.28) backwards;
 }
 
+/* Состояние: ШТОРКА (ACTIVE) */
 .island.active {
-    width: 320px;
+    width: 320px; /* Ширина шторки */
     height: 60px;
     border-radius: 30px;
     padding: 0 16px;
-    top: 50px;
+    top: 50px; /* Фиксируем положение сверху */
 }
 
+/* Логика смены контента (Логотип -> Кнопки) */
 .island-logo {
     width: 100%;
     height: 100%;
@@ -97,8 +105,10 @@ body {
     object-fit: contain;
 }
 
+/* Прячем логотип, когда активен */
 .island.active .island-logo { display: none; }
 
+/* Показываем контент, когда активен */
 .island-content {
     display: none;
     width: 100%;
@@ -117,15 +127,16 @@ body {
     line-height: 1.1;
     text-transform: uppercase;
     letter-spacing: 1px;
-    flex: 1;
+    flex: 1; /* Занимает все свободное место в центре */
 }
 
+/* --- 4. КНОПКИ В ОСТРОВЕ (С ОБВОДКОЙ КАК НА ГЛАВНОЙ) --- */
 .control-btn {
     width: 38px;
     height: 38px;
     border-radius: 50%;
     background-color: var(--btn-toggle-bg) !important;
-    border: 2.5px solid #ffffff !important;
+    border: 2.5px solid #ffffff !important; /* Белая обводка */
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -134,10 +145,32 @@ body {
     flex-shrink: 0;
 }
 
-.control-btn:active { transform: scale(0.85); }
+.control-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
 
+
+[data-theme="dark"] .control-btn:hover {
+    transform: scale(1.1);
+}
+
+.control-btn:hover svg {
+    fill: #ffffff;
+}
+
+[data-theme="dark"] .control-btn:hover svg {
+    fill: var(--logo-blue);
+}
+
+.control-btn:active {
+    transform: scale(0.85) !important;
+    transition: transform 0.1s ease-out;
+}
+
+/* Инверсия для темной темы */
 [data-theme="dark"] .island .control-btn {
-    border: 2.5px solid #0b2265 !important;
+    border: 2.5px solid #0b2265 !important; /* Синяя обводка */
     background-color: #ffffff !important;
 }
 
@@ -151,10 +184,15 @@ body {
     fill: #0b2265;
 }
 
+
+
+/* Убираем мусор в SVG */
 .control-btn svg circle, .control-btn circle { display: none !important; }
 
+/* --- 5. СЕТКА КАРТОЧЕК --- */
 .grid {
     display: grid;
+    /* Три колонки для услуг */
     grid-template-columns: repeat(3, 1fr); 
     gap: 12px;
     width: 100%;
@@ -162,6 +200,7 @@ body {
     margin-top: 10px;
 }
 
+/* Карточка (стиль главной) */
 .card {
     border: 2.5px solid var(--card-border);
     border-radius: 20px;
@@ -174,16 +213,26 @@ body {
     background-color: transparent;
     cursor: pointer;
     transition: transform 0.2s ease, background-color 0.3s ease, color 0.3s ease;
+    
+    /* Анимация появления */
     animation: slideUpFade 0.5s ease-out backwards;
 }
 
+/* --- 6. ЗАДЕРЖКИ АНИМАЦИИ (ПО РЯДАМ) --- */
+/* 1 ряд */
 .card:nth-child(1), .card:nth-child(2), .card:nth-child(3) { animation-delay: 0.2s; }
+/* 2 ряд */
 .card:nth-child(4), .card:nth-child(5), .card:nth-child(6) { animation-delay: 0.4s; }
+/* 3 ряд */
 .card:nth-child(7), .card:nth-child(8), .card:nth-child(9) { animation-delay: 0.6s; }
+/* 4 ряд */
 .card:nth-child(10), .card:nth-child(11), .card:nth-child(12) { animation-delay: 0.8s; }
+/* 5 ряд */
 .card:nth-child(13), .card:nth-child(14), .card:nth-child(15) { animation-delay: 1.0s; }
+/* 6 ряд */
 .card:nth-child(16), .card:nth-child(17), .card:nth-child(18) { animation-delay: 1.2s; }
 
+/* Эффекты наведения и нажатия */
 .card:hover, .card:active {
     background-color: var(--card-border);
     color: var(--bg-color);
@@ -205,6 +254,7 @@ body {
     padding: 2px;
 }
 
+/* Паттерн (фон карточки) */
 .card-pattern {
     position: absolute;
     inset: 0;
